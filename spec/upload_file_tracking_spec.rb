@@ -89,7 +89,6 @@ describe "#Manage file i/o" do
                                     "JOB_NAME":"MySecondJobName"
                                 }
                               ]
-
                   }'
  invalidFileContentWithEndMissing = '{
                     "DEPLOY": [
@@ -131,7 +130,6 @@ describe "#JSON handling" do
                                     "JOB_NAME":"MySecondJobName"
                                 }
                               ]
-
                   }'
   dupFileContent = '{
                     "DEPLOY": [
@@ -159,7 +157,6 @@ describe "#JSON handling" do
                                     "GIT_URL":"gitUrl3",
                                     "JOB_NAME":"MySecondJobName"
                                 }
-
                               ]
                   }'
 
@@ -178,6 +175,11 @@ describe "#JSON handling" do
     entry = @tracker.foundSha gitCommit
     
     expect(entry[0]["GIT_COMMIT"]).to eq("b72136305a436271829c128ebf35d9fc4dc786b4")
+    expect(entry[0]['BUILD_NUMBER']).to eq('456')
+    expect(entry[0]['GIT_BRANCH']).to eq('branch2')
+    expect(entry[0]['BUILD_URL']).to eq('buildURL2')
+    expect(entry[0]['GIT_URL']).to eq('gitUrl2')
+    expect(entry[0]['JOB_NAME']).to eq('MySecondJobName')
   end
 
   it "fails if more than one entry is found using a sha as a key" do
