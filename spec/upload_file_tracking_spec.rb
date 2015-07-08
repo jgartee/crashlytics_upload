@@ -161,7 +161,6 @@ describe "#JSON handling" do
                                 }
 
                               ]
-
                   }'
 
   before :each do
