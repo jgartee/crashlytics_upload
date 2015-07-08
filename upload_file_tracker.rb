@@ -1,3 +1,5 @@
+require 'json'
+
 class UploadFileTracker
 
   def initialize file = File
@@ -24,5 +26,20 @@ class UploadFileTracker
     contents = @file.read(trackingFile) if @file.size?(trackingFile) != nil
     contents
   end
+  
+  @jsonHash = nil
 
+  def getJSONHash filecontent
+    begin
+      @jsonHash = JSON.parse(filecontent) if @jsonHash == nil
+    rescue
+      nil
+    end
+  end
+
+  def foundSha gitSha
+
+    values = @jsonHash['DEPLOY']
+    values.select {|item| item["GIT_COMMIT"] == gitSha}.size() > 0
+  end
 end

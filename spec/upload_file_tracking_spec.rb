@@ -69,4 +69,83 @@ describe "#Manage file i/o" do
 
     verify!(fake_File,0).read(anything)
   end
+
+  goodFileContent = '{
+                    "DEPLOY": [
+                                {
+                                    "BUILD_NUMBER": "123",
+                                    "GIT_COMMIT":"4324235fdd",
+                                    "GIT_BRANCH":"branch1",
+                                    "BUILD_URL":"buildURL1",
+                                    "GIT_URL":"gitUrl1",
+                                    "JOB_NAME":"MyFirstJobName"
+                                },
+                                {
+                                    "BUILD_NUMBER": "456",
+                                    "GIT_COMMIT":"b72136305a436271829c128ebf35d9fc4dc786b4",
+                                    "GIT_BRANCH":"branch2",
+                                    "BUILD_URL":"buildURL2",
+                                    "GIT_URL":"gitUrl2",
+                                    "JOB_NAME":"MySecondJobName"
+                                }
+                              ]
+
+                  }'
+ invalidFileContentWithEndMissing = '{
+                    "DEPLOY": [
+                                {
+                                    "BUILD_NUMBER": "123",
+                                    "GIT_COMMIT":"4324235fdd",
+                                    "GIT_BRANCH":"branch1",
+                                    "BUILD_URL":"buildURL1",
+                                    "GIT_URL":"gitUrl1",
+                                    "JOB_NAME":"MyFirstJobName"
+                                '
+ 
+  it "returns an empty hash when pass an invalid JSON structure" do
+    expect(@tracker.getJSONHash invalidFileContentWithEndMissing).to eq(nil)
+  end
+
+  it "returns hash when passed a valid JSON structure" do
+    expect(@tracker.getJSONHash goodFileContent).not_to be_nil
+  end
+end
+
+describe "#JSON handling" do
+  goodFileContent = '{
+                    "DEPLOY": [
+                                {
+                                    "BUILD_NUMBER": "123",
+                                    "GIT_COMMIT":"4324235fdd",
+                                    "GIT_BRANCH":"branch1",
+                                    "BUILD_URL":"buildURL1",
+                                    "GIT_URL":"gitUrl1",
+                                    "JOB_NAME":"MyFirstJobName"
+                                },
+                                {
+                                    "BUILD_NUMBER": "456",
+                                    "GIT_COMMIT":"b72136305a436271829c128ebf35d9fc4dc786b4",
+                                    "GIT_BRANCH":"branch2",
+                                    "BUILD_URL":"buildURL2",
+                                    "GIT_URL":"gitUrl2",
+                                    "JOB_NAME":"MySecondJobName"
+                                }
+                              ]
+
+                  }'
+
+  before :each do
+    @tracker = UploadFileTracker.new
+    @tracker.getJSONHash goodFileContent
+  end
+
+  it "does not find sha from passed in SHA in the text" do
+    gitCommit = "7"
+    expect(@tracker.foundSha gitCommit).to eq(false)
+  end
+
+  it "does find sha from from passed in SHA in the text" do
+    gitCommit = "b72136305a436271829c128ebf35d9fc4dc786b4"
+    expect(@tracker.foundSha gitCommit).to eq(true)
+  end
 end
