@@ -133,6 +133,36 @@ describe "#JSON handling" do
                               ]
 
                   }'
+  dupFileContent = '{
+                    "DEPLOY": [
+                                {
+                                    "BUILD_NUMBER": "123",
+                                    "GIT_COMMIT":"4324235fdd",
+                                    "GIT_BRANCH":"branch1",
+                                    "BUILD_URL":"buildURL1",
+                                    "GIT_URL":"gitUrl1",
+                                    "JOB_NAME":"MyFirstJobName"
+                                },
+                                {
+                                    "BUILD_NUMBER": "456",
+                                    "GIT_COMMIT":"b72136305a436271829c128ebf35d9fc4dc786b4",
+                                    "GIT_BRANCH":"branch2",
+                                    "BUILD_URL":"buildURL2",
+                                    "GIT_URL":"gitUrl2",
+                                    "JOB_NAME":"MySecondJobName"
+                                },
+                                {
+                                    "BUILD_NUMBER": "789",
+                                    "GIT_COMMIT":"b72136305a436271829c128ebf35d9fc4dc786b4",
+                                    "GIT_BRANCH":"branch2",
+                                    "BUILD_URL":"buildURL3",
+                                    "GIT_URL":"gitUrl3",
+                                    "JOB_NAME":"MySecondJobName"
+                                }
+
+                              ]
+
+                  }'
 
   before :each do
     @tracker = UploadFileTracker.new
@@ -147,13 +177,15 @@ describe "#JSON handling" do
   it "does find sha from from passed in SHA in the text" do
     gitCommit = "b72136305a436271829c128ebf35d9fc4dc786b4"
     entry = @tracker.foundSha gitCommit
-    puts entry.class
-    puts entry.size
-    puts entry
-    puts entry.collect {|item| item[:GIT_COMMIT]}
-    # entry.each do |(a,b)|
-    #   puts a,b 
-    # end
-    expect(entry["GIT_COMMIT"]).to eq("b72136305a436271829c128ebf35d9fc4dc786b4")
+    
+    expect(entry[0]["GIT_COMMIT"]).to eq("b72136305a436271829c128ebf35d9fc4dc786b4")
+  end
+
+  it "fails if more than one entry is found using a sha as a key" do
+    gitCommit = "b72136305a436271829c128ebf35d9fc4dc786b4"
+    localTracker = UploadFileTracker.new
+    localTracker.getJSONHash dupFileContent
+
+    expect {localTracker.foundSha gitCommit}.to raise_error
   end
 end

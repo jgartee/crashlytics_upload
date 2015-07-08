@@ -40,6 +40,12 @@ class UploadFileTracker
   def foundSha gitSha
 
     values = @jsonHash['DEPLOY']
-    values.select {|item| item["GIT_COMMIT"] == gitSha}
+    result = values.select {|item| item["GIT_COMMIT"] == gitSha}
+
+    if(result.size > 1) then
+      raise 'Multiple uploads detected for sha:  ' + gitSha.to_s
+    end
+
+    result
   end
 end
