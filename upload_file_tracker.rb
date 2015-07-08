@@ -17,7 +17,13 @@ class UploadFileTracker
 
 
   def getFileContents
-    @file.new(trackingFile,"w")
-    ""
+    if(!@file.exist?(trackingFile)) then
+      @file.new(trackingFile,"w") 
+    end
+
+  puts @file.size(trackingFile)
+    fred = @file.read(trackingFile) if @file.size?(trackingFile) != nil
+    fred
   end
+
 end
