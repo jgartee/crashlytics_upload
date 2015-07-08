@@ -1,3 +1,6 @@
+## Mac system files
+.DS_Store
+
 *.gem
 *.rbc
 /.config
