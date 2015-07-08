@@ -141,11 +141,19 @@ describe "#JSON handling" do
 
   it "does not find sha from passed in SHA in the text" do
     gitCommit = "7"
-    expect(@tracker.foundSha gitCommit).to eq(false)
+    expect(@tracker.foundSha(gitCommit).size()).to eq(0)
   end
 
   it "does find sha from from passed in SHA in the text" do
     gitCommit = "b72136305a436271829c128ebf35d9fc4dc786b4"
-    expect(@tracker.foundSha gitCommit).to eq(true)
+    entry = @tracker.foundSha gitCommit
+    puts entry.class
+    puts entry.size
+    puts entry
+    puts entry.collect {|item| item[:GIT_COMMIT]}
+    # entry.each do |(a,b)|
+    #   puts a,b 
+    # end
+    expect(entry["GIT_COMMIT"]).to eq("b72136305a436271829c128ebf35d9fc4dc786b4")
   end
 end

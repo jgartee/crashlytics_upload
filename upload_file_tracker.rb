@@ -40,6 +40,6 @@ class UploadFileTracker
   def foundSha gitSha
 
     values = @jsonHash['DEPLOY']
-    values.select {|item| item["GIT_COMMIT"] == gitSha}.size() > 0
+    values.select {|item| item["GIT_COMMIT"] == gitSha}
   end
 end
