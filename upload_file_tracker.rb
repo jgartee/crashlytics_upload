@@ -21,9 +21,8 @@ class UploadFileTracker
       @file.new(trackingFile,"w") 
     end
 
-  puts @file.size(trackingFile)
-    fred = @file.read(trackingFile) if @file.size?(trackingFile) != nil
-    fred
+    contents = @file.read(trackingFile) if @file.size?(trackingFile) != nil
+    contents
   end
 
 end
