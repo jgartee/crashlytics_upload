@@ -1,6 +1,7 @@
 guard :rspec, cmd: "bundle exec rspec -f doc" do
   require "guard/rspec/dsl"
   dsl = Guard::RSpec::Dsl.new(self)
+  clearing:on
 
   # Feel free to open issues for suggestions and improvements
 
@@ -9,7 +10,7 @@ guard :rspec, cmd: "bundle exec rspec -f doc" do
   watch(rspec.spec_helper) { rspec.spec_dir }
   watch(rspec.spec_support) { rspec.spec_dir }
   watch(rspec.spec_files)
-  watch('upload_file_tracking.rb') 
+  watch('upload_file_tracker.rb') 
 
   # Ruby files
   ruby = dsl.ruby
