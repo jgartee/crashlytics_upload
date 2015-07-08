@@ -17,7 +17,6 @@ class UploadFileTracker
     targetDirectory + "/" + ENV["JOB_NAME"] + "CrashalyticsUpload.json"
   end
 
-
   def getFileContents
     if(!@file.exist?(trackingFile)) then
       @file.new(trackingFile,"w") 
@@ -37,7 +36,7 @@ class UploadFileTracker
     end
   end
 
-  def foundSha gitSha
+  def findEntryBySha gitSha
 
     values = @jsonHash['DEPLOY']
     result = values.select {|item| item["GIT_COMMIT"] == gitSha}

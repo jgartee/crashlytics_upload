@@ -167,12 +167,12 @@ describe "#JSON handling" do
 
   it "does not find sha from passed in SHA in the text" do
     gitCommit = "7"
-    expect(@tracker.foundSha(gitCommit).size()).to eq(0)
+    expect(@tracker.findEntryBySha(gitCommit).size()).to eq(0)
   end
 
   it "does find sha from from passed in SHA in the text" do
     gitCommit = "b72136305a436271829c128ebf35d9fc4dc786b4"
-    entry = @tracker.foundSha gitCommit
+    entry = @tracker.findEntryBySha gitCommit
     
     expect(entry[0]["GIT_COMMIT"]).to eq("b72136305a436271829c128ebf35d9fc4dc786b4")
     expect(entry[0]['BUILD_NUMBER']).to eq('456')
@@ -187,6 +187,6 @@ describe "#JSON handling" do
     localTracker = UploadFileTracker.new
     localTracker.getJSONHash dupFileContent
 
-    expect {localTracker.foundSha gitCommit}.to raise_error
+    expect {localTracker.findEntryBySha gitCommit}.to raise_error
   end
 end
