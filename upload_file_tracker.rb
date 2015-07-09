@@ -36,7 +36,7 @@ class UploadFileTracker
     end
   end
 
-  def findEntryBySha gitSha
+  def findJsonEntryBySha gitSha
 
     values = @jsonHash['DEPLOY']
     result = values.select { | item | item["GIT_COMMIT"] == gitSha}
@@ -46,5 +46,19 @@ class UploadFileTracker
     end
 
     result
+  end
+
+  def addJob gitCommit, buildNumber, gitBranch, buildUrl, gitUrl, jobName
+
+    raise 'Missing parameter.' if gitCommit == nil || buildNumber == nil || gitBranch == nil || buildUrl == nil || gitUrl == nil || jobName == nil
+
+    @jsonHash["DEPLOY"] <<  { BUILD_NUMBER: buildNumber,
+                              GIT_COMMIT:  gitCommit,
+                              GIT_BRANCH:  gitBranch,
+                              BUILD_URL:   buildUrl,
+                              GIT_URL:     gitUrl,
+                              JOB_NAME:    jobName
+                            }
+    @jsonHash =JSON.parse(@jsonHash.to_json)
   end
 end

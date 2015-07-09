@@ -165,16 +165,18 @@ describe "#JSON handling" do
     @tracker.getJSONHash goodFileContent
   end
 
-  it "does not find sha from passed in SHA in the text" do
+  it "does not find sha when not in the file" do
     gitCommit = "7"
-    expect(@tracker.findEntryBySha(gitCommit).size()).to eq(0)
+
+    expect(@tracker.findJsonEntryBySha gitCommit).to eq([])
   end
 
-  it "does find sha from from passed in SHA in the text" do
+  it "does find sha from from passed in SHA when in the file" do
     gitCommit = "b72136305a436271829c128ebf35d9fc4dc786b4"
-    entry = @tracker.findEntryBySha gitCommit
+    entry = @tracker.findJsonEntryBySha gitCommit
+    puts entry
     
-    expect(entry[0]["GIT_COMMIT"]).to eq("b72136305a436271829c128ebf35d9fc4dc786b4")
+    expect(entry[0]['GIT_COMMIT']).to eq("b72136305a436271829c128ebf35d9fc4dc786b4")
     expect(entry[0]['BUILD_NUMBER']).to eq('456')
     expect(entry[0]['GIT_BRANCH']).to eq('branch2')
     expect(entry[0]['BUILD_URL']).to eq('buildURL2')
@@ -187,6 +189,39 @@ describe "#JSON handling" do
     localTracker = UploadFileTracker.new
     localTracker.getJSONHash dupFileContent
 
-    expect {localTracker.findEntryBySha gitCommit}.to raise_error
+    expect {localTracker.findJsonEntryBySha gitCommit}.to raise_error
   end
+
+  it "fails when attempting to add with empty parameters" do
+    gitCommit = nil
+    buildNumber = nil
+    gitBranch = nil
+    buildUrl = nil
+    gitUrl = nil
+    jobName = nil
+
+    expect {@tracker.addJob gitCommit, buildNumber, gitBranch, buildUrl, gitUrl, jobName}.to raise_error('Missing parameter.')
+  end
+
+  it "adds an entry when all parameters are given" do
+    gitCommit = "e9"
+    buildNumber = "789"
+    gitBranch = "branch3"
+    buildUrl = "buildURL4"
+    gitUrl = "gitUrl4"
+    jobName = "MyThirdJobName"
+    
+    @tracker.addJob gitCommit, buildNumber, gitBranch, buildUrl, gitUrl, jobName
+
+    entry = @tracker.findJsonEntryBySha gitCommit
+    
+    expect(entry[0]["GIT_COMMIT"]).to eq(gitCommit)
+    expect(entry[0]['BUILD_NUMBER']).to eq(buildNumber)
+    expect(entry[0]['GIT_BRANCH']).to eq(gitBranch)
+    expect(entry[0]['BUILD_URL']).to eq(buildUrl)
+    expect(entry[0]['GIT_URL']).to eq(gitUrl)
+    expect(entry[0]['JOB_NAME']).to eq(jobName)
+  end
+
+  #test for actual contents in the write
 end
